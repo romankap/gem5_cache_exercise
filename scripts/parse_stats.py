@@ -1,22 +1,32 @@
 import re
+from histogram_stat import HistogramStatsList
 
 STATS_FILE_PATH = "/home/rkaplan/gem5_exercise/gem5/m5out/stats.txt"
 MISS_LATENCY_STR = "missLatency"
 
 #------------------------------------------
 
-def parse_stats_file(stats_file_path):
-    # Using readlines()
-    file1 = open(stats_file_path, 'r')
-    Lines = file1.readlines()
-    
-    count = 0
-    # Strips the newline character
-    for line in Lines:
+def get_histogram_stats_list(file_lines):
+    hist_stats_list = HistogramStatsList("Miss Latencies")
+
+    for line in file_lines:
         if MISS_LATENCY_STR in line:
             split_line = re.split(' +', line)
-            print("Line{}: {}".format(count, line.strip()))
+            hist_stats_list.append_line_to_histogram_list(split_line)
 
+    return hist_stats_list
+
+#-------------------------------------------
+
+def plot_histogram_from_stats_file(stats_file_path):
+    # Using readlines()
+    stats_file = open(stats_file_path, 'r')
+    file_lines = stats_file.readlines()
+    hist_stats_list = get_histogram_stats_list(file_lines)
+
+    # TODO: Plot the histogram. Implement as HistogramStatsList method.
+
+    return hist_stats_list
 #------------------------------------------
 
-parse_stats_file(STATS_FILE_PATH)
+plot_histogram_from_stats_file(STATS_FILE_PATH)
