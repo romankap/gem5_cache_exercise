@@ -1,4 +1,6 @@
 se_results
+.venv
+.vscode
 build
 parser.out
 parsetab.py
