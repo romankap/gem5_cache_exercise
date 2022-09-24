@@ -68,8 +68,11 @@ namespace gem5
 
 Cache::Cache(const CacheParams &p)
     : BaseCache(p, p.system->cacheLineSize()),
-      doFastWrites(true)
+      doFastWrites(true),
+      ADD_STAT(missLatency, statistics::units::Tick::get(),
+               "Ticks for misses to the cache")
 {
+    missLatency.init(16); // number of buckets
     assert(p.tags);
     assert(p.replacement_policy);
 }
@@ -396,6 +399,7 @@ Cache::handleTimingReqMiss(PacketPtr pkt, CacheBlk *blk, Tick forward_time,
         pkt = pf;
     }
 
+    missLatency.sample(forward_time);
     BaseCache::handleTimingReqMiss(pkt, mshr, blk, forward_time, request_time);
 }
 

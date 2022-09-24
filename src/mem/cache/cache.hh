@@ -50,6 +50,7 @@
 #include <unordered_set>
 
 #include "base/compiler.hh"
+#include "base/statistics.hh"
 #include "base/types.hh"
 #include "mem/cache/base.hh"
 #include "mem/packet.hh"
@@ -78,6 +79,8 @@ class Cache : public BaseCache
      * generated and which ones were merely forwarded.
      */
     std::unordered_set<RequestPtr> outstandingSnoop;
+
+    Stats::Histogram missLatency;
 
   protected:
     /**
