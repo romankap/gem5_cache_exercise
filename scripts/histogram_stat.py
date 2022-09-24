@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 class HistogramStat:
     def __init__(self, split_line):
         self.bucketRange = self.extract_histogram_bucket(split_line[0])
@@ -54,3 +56,19 @@ class HistogramStatsList:
             self.histStatsList.append(hist_stat)
 
     #--------------------------------------------------
+
+    def plot_histogram(self):
+        bucket_ranges = []
+        bucket_samples = []
+
+        for hist_stat in self.histStatsList:
+            bucket_ranges.append(hist_stat.get_bucket_range())
+            bucket_samples.append(hist_stat.get_bucket_samples_num())
+
+        plt.bar(bucket_ranges, bucket_samples)
+
+        plt.xlabel("Clock ticks range")
+        plt.ylabel("No. of misses")
+        plt.title("Cache misses vs. Clock ticks range")
+        plt.xticks(rotation=90)
+        plt.show()

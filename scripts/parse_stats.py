@@ -23,8 +23,7 @@ def plot_histogram_from_stats_file(stats_file_path):
     stats_file = open(stats_file_path, 'r')
     file_lines = stats_file.readlines()
     hist_stats_list = get_histogram_stats_list(file_lines)
-
-    # TODO: Plot the histogram. Implement as HistogramStatsList method.
+    hist_stats_list.plot_histogram()
 
     return hist_stats_list
 #------------------------------------------
