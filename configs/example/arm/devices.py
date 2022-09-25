@@ -95,12 +95,16 @@ class MemBus(SystemXBar):
 
 class CpuCluster(SubSystem):
     def __init__(self, system,  num_cpus, cpu_clock, cpu_voltage,
-                 cpu_type, l1i_type, l1d_type, l2_type):
+                 cpu_type, l1i_type, l1d_type, l2_type, l3_type = None):
         super(CpuCluster, self).__init__()
         self._cpu_type = cpu_type
         self._l1i_type = l1i_type
         self._l1d_type = l1d_type
         self._l2_type = l2_type
+        if l3_type == None:
+            self._l3_type = l2_type
+        else:
+            self._l3_type = l3_type
 
         assert num_cpus > 0
 
@@ -129,6 +133,10 @@ class CpuCluster(SubSystem):
             l1i = None if self._l1i_type is None else self._l1i_type()
             l1d = None if self._l1d_type is None else self._l1d_type()
             cpu.addPrivateSplitL1Caches(l1i, l1d)
+            # cpu.cache = SimpleCache(size='1kB')
+            # cpu.icache_port = cpu.cache.cpu_side
+            # cpu.dcache_port = cpu.cache.cpu_side
+            # cpu.cache.mem_side = cpu.membus.cpu_side_ports
 
     def addL2(self, clk_domain):
         if self._l2_type is None:
@@ -138,6 +146,41 @@ class CpuCluster(SubSystem):
         for cpu in self.cpus:
             cpu.connectCachedPorts(self.toL2Bus.cpu_side_ports)
         self.toL2Bus.mem_side_ports = self.l2.cpu_side
+
+    def addL3(self, clk_domain):
+        if self._l3_type is None:
+            return
+        self.toL3Bus = SystemXBar(width=64, clk_domain=clk_domain)
+        self.l3 = self._l3_type()
+        for cpu in self.cpus:
+            cpu.connectCachedPorts(self.toL3Bus.cpu_side_ports)
+        self.toL3Bus.mem_side_ports = self.l3.cpu_side
+
+    def addL2L3(self, clk_domain):
+        if self._l2_type is None or self._l3_type is None:
+            return
+        self.toL2Bus = L2XBar(width=64, clk_domain=clk_domain)
+        self.toL3Bus = SystemXBar(width=128, clk_domain=clk_domain)
+
+        self.l2 = self._l2_type()
+        self.l3 = self._l3_type()
+
+        for cpu in self.cpus:
+            cpu.connectCachedPorts(self.toL2Bus.cpu_side_ports)
+        
+        self.l2.mem_side = self.toL3Bus.cpu_side_ports
+
+        self.toL2Bus.mem_side_ports = self.l2.cpu_side
+
+        self.toL3Bus.mem_side_ports = self.l3.cpu_side
+
+        # self.l3.cpu_side = self.toL3Bus.mem_side_ports
+        # cpu.l1c.cpu_side = cpu.port
+        # cpu.l1c.mem_side = system.toL2Bus.cpu_side_ports
+        # system.l2c.cpu_side = system.toL2Bus.mem_side_ports
+        # connect l2c to membus
+        # system.l2c.mem_side = system.membus.cpu_side_ports
+
 
     def addPMUs(self, ints, events=[]):
         """
@@ -165,9 +208,13 @@ class CpuCluster(SubSystem):
                 for ev in events:
                     isa.pmu.addEvent(ev)
 
-    def connectMemSide(self, bus):
+    def connectMemSide(self, bus, type=None):
         try:
-            self.l2.mem_side = bus.cpu_side_ports
+            if type == "L3":
+                self.l3.mem_side = bus.cpu_side_ports
+            else:
+                self.l2.mem_side = bus.cpu_side_ports
+
         except AttributeError:
             for cpu in self.cpus:
                 cpu.connectCachedPorts(bus.cpu_side_ports)
