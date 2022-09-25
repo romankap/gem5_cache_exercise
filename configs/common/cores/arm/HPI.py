@@ -1379,6 +1379,17 @@ class HPI_L2(Cache):
     write_buffers = 16
     # prefetcher FIXME
 
+class HPI_L3(Cache):
+    data_latency = 13*4
+    tag_latency = 13*4
+    response_latency = 5*4
+    mshrs = 8
+    tgts_per_mshr = 16
+    size = '16MB'
+    assoc = 16
+    write_buffers = 16
+    # prefetcher FIXME
+
 class HPI(MinorCPU):
     # Inherit the doc string from the module to avoid repeating it
     # here.
