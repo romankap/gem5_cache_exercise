@@ -1,4 +1,14 @@
+from tkinter.messagebox import NO
 import matplotlib.pyplot as plt
+
+#-------------------------------------------
+def is_float(element) -> bool:
+    try:
+        float(element)
+        return True
+    except ValueError:
+        return False
+#----------------------------------------------
 
 class HistogramStat:
     def __init__(self, split_line):
@@ -35,23 +45,41 @@ class HistogramStat:
     def is_histogram_stat_line(cls, split_line):
         bucket_range = split_line[0].split("::")[1]
         range_start = bucket_range.split("-")[0]
-        if range_start.isnumeric():
+        if range_start.isnumeric() or is_float(range_start):
+            return True
+        else:
+            return False
+
+    #-------------------------------------------------
+
+    @classmethod
+    def is_stat_line_contains_string(cls, split_line, stat_filter):
+        bucket_stat_string = split_line[0].split("::")[0]
+        if stat_filter in bucket_stat_string:
             return True
         else:
             return False
 
 #------------------------------------------------------
+#------------------------------------------------------
+#------------------------------------------------------
 
 class HistogramStatsList:
-    def __init__(self, name = None):
+    def __init__(self, stat_filter = None, name = None):
         self.listName = name
+        self.statFilter = stat_filter
         self.histStatsList = []
 
     #--------------------------------------------------
 
     def append_line_to_histogram_list(self, split_line):
         is_hist_line = HistogramStat.is_histogram_stat_line(split_line)
-        if is_hist_line:
+        if self.statFilter != None:
+            is_stat_contains_string = HistogramStat.is_stat_line_contains_string(split_line, self.statFilter)
+        else:
+            is_stat_contains_string = True
+        
+        if is_hist_line and is_stat_contains_string:
             hist_stat = HistogramStat(split_line)
             self.histStatsList.append(hist_stat)
 
