@@ -116,13 +116,43 @@ class L2Cache(Cache):
     mshrs = 20
     tgts_per_mshr = 12
 
-    SimpleOpts.add_option('--l2_size', help="L2 cache size. Default: %s" % size)
+    SimpleOpts.add_option('--l2_size',
+                        help="L2 cache size. Default: %s" % size)
 
     def __init__(self, opts=None):
         super(L2Cache, self).__init__()
         if not opts or not opts.l2_size:
             return
         self.size = opts.l2_size
+
+    def connectCPUSideBus(self, bus):
+        self.cpu_side = bus.mem_side_ports
+
+    def connectMemSideBus(self, bus):
+        self.mem_side = bus.cpu_side_ports
+
+
+
+class L3Cache(Cache):
+    """Simple L3 Cache with default values"""
+
+    # Default parameters
+    size = '16MB'
+    assoc = 16
+    tag_latency = 200
+    data_latency = 200
+    response_latency = 200
+    mshrs = 20
+    tgts_per_mshr = 12
+
+    SimpleOpts.add_option('--l3_size',
+                help="L3 cache size. Default: %s" % size)
+
+    def __init__(self, opts=None):
+        super(L3Cache, self).__init__()
+        if not opts or not opts.l3_size:
+            return
+        self.size = opts.l3_size
 
     def connectCPUSideBus(self, bus):
         self.cpu_side = bus.mem_side_ports
