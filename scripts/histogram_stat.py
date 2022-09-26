@@ -1,5 +1,9 @@
-from tkinter.messagebox import NO
+from statistics import mean
 import matplotlib.pyplot as plt
+
+MEAN_STR = "mean"
+SAMPLES_STR = "samples"
+TOTAL_STR = "total"
 
 #-------------------------------------------
 def is_float(element) -> bool:
@@ -59,29 +63,83 @@ class HistogramStat:
             return True
         else:
             return False
+    #-------------------------------------------------
+
+    @classmethod
+    def is_stat_line_contains_mean(cls, split_line):
+        bucket_stat_string = split_line[0].split("::")[1]
+        if MEAN_STR == bucket_stat_string:
+            return float(split_line[1])
+        else:
+            return None
+
+    #-------------------------------------------------
+
+    @classmethod
+    def is_stat_line_contains_total_samples(cls, split_line):
+        bucket_stat_string = split_line[0].split("::")[1]
+        if SAMPLES_STR == bucket_stat_string:
+            return int(split_line[1])
+        else:
+            return None
+
 
 #------------------------------------------------------
 #------------------------------------------------------
 #------------------------------------------------------
 
 class HistogramStatsList:
-    def __init__(self, stat_filter = None, name = None):
+    def __init__(self, stat_filter = None, name = None, bm_name = None):
         self.listName = name
         self.statFilter = stat_filter
+        self.benchmark_name = bm_name
+
+        self.mean = -1
+        self.samples_num = -1
         self.histStatsList = []
 
     #--------------------------------------------------
 
+    def get_benchmark_name(self):
+        return self.benchmarkName
+
+    #--------------------------------------------------
+
+    def get_mean(self):
+        return self.mean
+    
+    #--------------------------------------------------
+
+    def get_samples_num(self):
+        return self.samples_num
+    #--------------------------------------------------
+
+
+    def check_if_line_has_special_stat_and_set(self, split_line):
+        mean_val = HistogramStat.is_stat_line_contains_mean(split_line)
+        if mean_val != None:
+            self.mean = mean_val
+            return
+        
+        samples_num_val = HistogramStat.is_stat_line_contains_total_samples(split_line)
+        if samples_num_val != None:
+            self.samples_num = samples_num_val
+
+    #--------------------------------------------------
+
     def append_line_to_histogram_list(self, split_line):
-        is_hist_line = HistogramStat.is_histogram_stat_line(split_line)
+        is_histogram_line = HistogramStat.is_histogram_stat_line(split_line)
         if self.statFilter != None:
             is_stat_contains_string = HistogramStat.is_stat_line_contains_string(split_line, self.statFilter)
         else:
             is_stat_contains_string = True
         
-        if is_hist_line and is_stat_contains_string:
-            hist_stat = HistogramStat(split_line)
-            self.histStatsList.append(hist_stat)
+        if is_stat_contains_string:
+            if is_histogram_line:
+                hist_stat = HistogramStat(split_line)
+                self.histStatsList.append(hist_stat)
+            else:
+                self.check_if_line_has_special_stat_and_set(split_line)
 
     #--------------------------------------------------
 
@@ -93,10 +151,15 @@ class HistogramStatsList:
             bucket_ranges.append(hist_stat.get_bucket_range())
             bucket_samples.append(hist_stat.get_bucket_samples_num())
 
-        plt.bar(bucket_ranges, bucket_samples)
+        print("{} samples num = {}".format(self.statFilter, self.samples_num))
+        print("{} mean = {}".format(self.statFilter, self.mean))
 
+        plt.bar(bucket_ranges, bucket_samples)
         plt.xlabel("Clock ticks range")
-        plt.ylabel("No. of misses")
-        plt.title("Cache misses vs. Clock ticks range")
+        plt.ylabel("Miss Latencies")
+
+        title = self.benchmark_name + ": " if self.benchmark_name != None else ""
+        title += "Cache miss latencies vs. Clock ticks range"
+        plt.title(title)
         plt.xticks(rotation=90)
         plt.show()
