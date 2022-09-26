@@ -80,7 +80,7 @@ class Cache : public BaseCache
      */
     std::unordered_set<RequestPtr> outstandingSnoop;
 
-    Stats::Histogram missLatency;
+    Stats::Histogram missLatencyHistogram;
 
   protected:
     /**
