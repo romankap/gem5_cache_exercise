@@ -162,4 +162,4 @@ class HistogramStatsList:
         title += "Cache miss latencies vs. Clock ticks range"
         plt.title(title)
         plt.xticks(rotation=90)
-        plt.show()
+        # plt.show(block=True)

@@ -1,5 +1,6 @@
 import re, os
 from histogram_stat import HistogramStatsList
+import matplotlib.pyplot as plt
 import argparse
 
 GEM5_BASE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../")
@@ -29,6 +30,7 @@ REAL_MM_STR = "RealMM"
 OSCAR_STR = "Oscar"
 # BENCHMARKS_LIST = [BUBBLE_SORT_STR, QUICK_SORT_STR, INT_MM_STR]
 BENCHMARKS_LIST = [INT_MM_STR, QUICK_SORT_STR, OSCAR_STR, BUBBLE_SORT_STR]
+ALL_STR = "all"
 
 
 #------------------------------------------
@@ -100,6 +102,20 @@ def execute_se_benchmark(benchmark_name, benchmark_type):
 
 #------------------------------------------
 
+def set_and_return_parsed_args():
+    parser = argparse.ArgumentParser(description="Choose whether to execute a BM or only compare.")
+
+    parser.add_argument("--bm_names", type=str, choices=BENCHMARKS_LIST,
+                        default=INT_MM_STR, nargs='*', metavar='',
+                        help="Choose which BM to execute or compare: " +
+                        ', '.join(BENCHMARKS_LIST) + " or all.")
+    parser.add_argument("--execute_bm", default=False, action='store_true',
+                        help="If the argument is set, the benchmarks will be executed before their comparison.")
+    args = parser.parse_args()
+    return args
+
+#------------------------------------------
+
 def compare_benchmark_stats(benchmark_name):
     histogram_w_only_L2 = plot_se_benchmark_histogram(benchmark_name, benchmark_type=L2_STR, cache_level_string=L2_STR)
     only_L2_mean = histogram_w_only_L2.get_mean()
@@ -115,13 +131,26 @@ def compare_benchmark_stats(benchmark_name):
 #------------------------------------------
 
 def main():
-    is_execute_needed = True
-    if is_execute_needed:
-        for bm_name in BENCHMARKS_LIST:
-            execute_se_benchmark(bm_name, L2_STR)
-            execute_se_benchmark(bm_name, L3_STR)
+    args = set_and_return_parsed_args()
+    if args.execute_bm:
+        if ALL_STR in args.bm_names:
+            for bm_name in BENCHMARKS_LIST:
+                execute_se_benchmark(bm_name, L2_STR)
+                execute_se_benchmark(bm_name, L3_STR)
+        else:
+            for bm_name in args.bm_names:
+                execute_se_benchmark(bm_name, L2_STR)
+                execute_se_benchmark(bm_name, L3_STR)
 
-    for bm_name in BENCHMARKS_LIST:
-        compare_benchmark_stats(bm_name)
+    if ALL_STR in args.bm_names:
+        for bm_name in BENCHMARKS_LIST:
+            compare_benchmark_stats(bm_name)
+    else:
+        for bm_name in args.bm_names:
+            compare_benchmark_stats(bm_name)
+    plt.show(block=True)
+
+
+#------------------------------------------
 
 main()
