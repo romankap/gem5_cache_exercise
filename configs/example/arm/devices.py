@@ -101,10 +101,10 @@ class CpuCluster(SubSystem):
         self._l1i_type = l1i_type
         self._l1d_type = l1d_type
         self._l2_type = l2_type
-        if l3_type == None:
-            self._l3_type = l2_type
-        else:
-            self._l3_type = l3_type
+        self._l3_type = l3_type
+        # if l3_type == None:
+        #     self._l3_type = l2_type
+        # else:
 
         assert num_cpus > 0
 
@@ -150,7 +150,7 @@ class CpuCluster(SubSystem):
     def addL3(self, clk_domain):
         if self._l3_type is None:
             return
-        self.toL3Bus = SystemXBar(width=64, clk_domain=clk_domain)
+        self.toL3Bus = L2XBar(width=64, clk_domain=clk_domain)
         self.l3 = self._l3_type()
         for cpu in self.cpus:
             cpu.connectCachedPorts(self.toL3Bus.cpu_side_ports)
@@ -159,27 +159,26 @@ class CpuCluster(SubSystem):
     def addL2L3(self, clk_domain):
         if self._l2_type is None or self._l3_type is None:
             return
+        # Create XBar for each cache
         self.toL2Bus = L2XBar(width=64, clk_domain=clk_domain)
-        self.toL3Bus = SystemXBar(width=128, clk_domain=clk_domain)
+        self.toL3Bus = L2XBar(width=64, clk_domain=clk_domain)
 
+        # Instantiate the caches
         self.l2 = self._l2_type()
         self.l3 = self._l3_type()
 
+        # Connect L2 to L1 caches.
         for cpu in self.cpus:
             cpu.connectCachedPorts(self.toL2Bus.cpu_side_ports)
-        
+
+        # Conncet L3 to L2
         self.l2.mem_side = self.toL3Bus.cpu_side_ports
 
+        # self.l3.mem_side = self.membus.cpu_side_ports
+
+        # Connect each of L2 and L3 to its bus.
         self.toL2Bus.mem_side_ports = self.l2.cpu_side
-
         self.toL3Bus.mem_side_ports = self.l3.cpu_side
-
-        # self.l3.cpu_side = self.toL3Bus.mem_side_ports
-        # cpu.l1c.cpu_side = cpu.port
-        # cpu.l1c.mem_side = system.toL2Bus.cpu_side_ports
-        # system.l2c.cpu_side = system.toL2Bus.mem_side_ports
-        # connect l2c to membus
-        # system.l2c.mem_side = system.membus.cpu_side_ports
 
 
     def addPMUs(self, ints, events=[]):
