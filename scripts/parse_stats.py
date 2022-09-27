@@ -1,5 +1,6 @@
 import re, os
 from histogram_stat import HistogramStatsList
+import argparse
 
 GEM5_BASE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../")
 BUILD_SCRIPT_RELATIVE_PATH = 'build/ARM/gem5.opt'
@@ -20,19 +21,21 @@ L3_STR = "l3"
 SPACE_CHAR = ' '
 
 # Benchmarks
-BUBBLE_SORT_STR = "BubbleSort"
-QUICK_SORT_STR = "QuickSort"
+BUBBLE_SORT_STR = "Bubblesort"
+QUICK_SORT_STR = "Quicksort"
 INT_MM_STR = "IntMM"
 FLOAT_MM_STR = "FloatMM"
 REAL_MM_STR = "RealMM"
 OSCAR_STR = "Oscar"
-BENCHMARKS_LIST = [INT_MM_STR]
+# BENCHMARKS_LIST = [BUBBLE_SORT_STR, QUICK_SORT_STR, INT_MM_STR]
+BENCHMARKS_LIST = [QUICK_SORT_STR, OSCAR_STR, INT_MM_STR, BUBBLE_SORT_STR]
 
 
 #------------------------------------------
 
-def get_histogram_stats_list(file_lines, stat_filter, benchmark_name):
-    hist_stats_list = HistogramStatsList(stat_filter, "L2 Miss Latencies", benchmark_name)
+def get_histogram_stats_list(file_lines, stat_filter, benchmark_type, benchmark_name):
+    plot_title_name = benchmark_name + " , " + benchmark_type
+    hist_stats_list = HistogramStatsList(stat_filter, "L2 Miss Latencies", plot_title_name)
 
     for line in file_lines:
         if MISS_LATENCY_STR in line:
@@ -43,11 +46,13 @@ def get_histogram_stats_list(file_lines, stat_filter, benchmark_name):
 
 #-------------------------------------------
 
-def plot_histogram_from_stats_file(stats_file_path, cache_level_string, benchmark_name):
+def plot_histogram_from_stats_file(stats_file_path, cache_level_string, 
+                                    benchmark_type, benchmark_name):
     # Using readlines()
     stats_file = open(stats_file_path, 'r')
     file_lines = stats_file.readlines()
-    hist_stats_list = get_histogram_stats_list(file_lines, cache_level_string, benchmark_name)
+    hist_stats_list = get_histogram_stats_list(file_lines, cache_level_string, 
+                                                benchmark_type, benchmark_name)
     hist_stats_list.plot_histogram()
 
     return hist_stats_list
@@ -69,7 +74,7 @@ def plot_se_benchmark_histogram(benchmark_name, benchmark_type, cache_level_stri
     bm_stats_file_base_path = get_se_results_dir_path(benchmark_type, benchmark_name)
     bm_stats_file_full_path = os.path.join(bm_stats_file_base_path, STATS_TXT_FILENAME)
     histogram = plot_histogram_from_stats_file(bm_stats_file_full_path,
-                                    cache_level_string, benchmark_name)
+                                    cache_level_string, benchmark_type, benchmark_name)
     return histogram
 
 #------------------------------------------
@@ -95,31 +100,28 @@ def execute_se_benchmark(benchmark_name, benchmark_type):
 
 #------------------------------------------
 
-def compare_benchmark_stats(benchmark_name, is_execute_needed = False):
-    if (is_execute_needed):
-        execute_se_benchmark(benchmark_name, L2_STR)
+def compare_benchmark_stats(benchmark_name):
     histogram_w_only_L2 = plot_se_benchmark_histogram(benchmark_name, benchmark_type=L2_STR, cache_level_string=L2_STR)
     only_L2_mean = histogram_w_only_L2.get_mean()
     only_L2_samples_num = histogram_w_only_L2.get_samples_num()
 
-    if (is_execute_needed):
-        execute_se_benchmark(benchmark_name, L3_STR)
     histogram_with_L3 = plot_se_benchmark_histogram(benchmark_name, benchmark_type=L3_STR, cache_level_string=L2_STR)
     with_L3_mean = histogram_with_L3.get_mean()
     with_L3_samples_num = histogram_with_L3.get_samples_num()
 
-    print("{}: Adding L3 changed total L2 miss latencies from {} to {}".format(benchmark_name, only_L2_samples_num, with_L3_samples_num))
     print("{}: Adding L3 changed L2 miss latencies mean from {} to {}".format(benchmark_name, only_L2_mean, with_L3_mean))
-
+    print("{}: Adding L3 changed L2 number of misses from {} to {}".format(benchmark_name, only_L2_samples_num, with_L3_samples_num))
 
 #------------------------------------------
 
-# execute_se_benchmark(bm_to_plot, L2_STR)
-# plot_se_benchmark_histogram(bm_to_plot, L2_STR)
-
 def main():
-    cache_level_to_plot = L2_STR
+    is_execute_needed = True
+    if is_execute_needed:
+        for bm_name in BENCHMARKS_LIST:
+            execute_se_benchmark(bm_name, L2_STR)
+            execute_se_benchmark(bm_name, L3_STR)
+
     for bm_name in BENCHMARKS_LIST:
-        compare_benchmark_stats(bm_name, is_execute_needed = True)
+        compare_benchmark_stats(bm_name)
 
 main()
