@@ -118,7 +118,7 @@ class HistogramStatsList:
     def check_if_line_has_special_stat_and_set(self, split_line):
         mean_val = HistogramStat.is_stat_line_contains_mean(split_line)
         if mean_val != None:
-            self.mean = mean_val
+            self.mean = mean_val if mean_val < 10.0 else int(mean_val)
             return
         
         samples_num_val = HistogramStat.is_stat_line_contains_total_samples(split_line)
