@@ -8,7 +8,7 @@ M5OUT_STATS_FILE_PATH = os.path.join(GEM5_BASE_PATH, "m5out/stats.txt")
 SE_RESULTS_BASE_DIR_PATH = os.path.join(GEM5_BASE_PATH, "se_results/")
 ONLY_L2_STR = "only_L2"
 WITH_L3_STR = "with_L3"
-SE_BENCHMARKS_BASE_DIR_PATH = os.path.join(GEM5_BASE_PATH, "../", "se-benchmarks/")
+SE_BENCHMARKS_BASE_DIR_PATH = os.path.join(GEM5_BASE_PATH, "se-benchmarks/")
 STARTER_SE_W_L2_CACHE_SCRIPT_PATH = "configs/example/arm/starter_se.py"
 STARTER_SE_W_L3_CACHE_SCRIPT_PATH = "configs/example/arm/starter_se_with_l3_cache.py"
 STATS_TXT_FILENAME = "stats.txt"
@@ -28,7 +28,7 @@ FLOAT_MM_STR = "FloatMM"
 REAL_MM_STR = "RealMM"
 OSCAR_STR = "Oscar"
 # BENCHMARKS_LIST = [BUBBLE_SORT_STR, QUICK_SORT_STR, INT_MM_STR]
-BENCHMARKS_LIST = [QUICK_SORT_STR, OSCAR_STR, INT_MM_STR, BUBBLE_SORT_STR]
+BENCHMARKS_LIST = [INT_MM_STR, QUICK_SORT_STR, OSCAR_STR, BUBBLE_SORT_STR]
 
 
 #------------------------------------------
@@ -46,12 +46,12 @@ def get_histogram_stats_list(file_lines, stat_filter, benchmark_type, benchmark_
 
 #-------------------------------------------
 
-def plot_histogram_from_stats_file(stats_file_path, cache_level_string, 
+def plot_histogram_from_stats_file(stats_file_path, cache_level_string,
                                     benchmark_type, benchmark_name):
     # Using readlines()
     stats_file = open(stats_file_path, 'r')
     file_lines = stats_file.readlines()
-    hist_stats_list = get_histogram_stats_list(file_lines, cache_level_string, 
+    hist_stats_list = get_histogram_stats_list(file_lines, cache_level_string,
                                                 benchmark_type, benchmark_name)
     hist_stats_list.plot_histogram()
 
