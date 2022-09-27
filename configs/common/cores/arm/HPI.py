@@ -1386,8 +1386,8 @@ class HPI_L3(Cache):
     mshrs = 8
     tgts_per_mshr = 16
     size = '16MB'
-    assoc = 16
-    write_buffers = 16
+    assoc = 32
+    write_buffers = 32
     # prefetcher FIXME
 
 class HPI(MinorCPU):
