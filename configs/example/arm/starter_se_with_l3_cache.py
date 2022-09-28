@@ -94,27 +94,6 @@ class SimpleSeSystem(System):
         self.membus = SystemXBar()
 
         #-------------------------------------------------------------------
-        # # Added simple cache
-        # self.cache = SimpleCache(size='1kB')
-
-        # self.cpu.icache_port = self.cache.cpu_side
-        # self.cpu.dcache_port = self.cache.cpu_side
-
-        # # Hook the cache up to the memory bus
-        # self.cache.mem_side = self.membus.cpu_side_ports
-
-        # # create the interrupt controller for the CPU and connect to the membus
-        # self.cpu.createInterruptController()
-        # self.cpu.interrupts[0].pio = self.membus.mem_side_ports
-        # self.cpu.interrupts[0].int_requestor = self.membus.cpu_side_ports
-        # self.cpu.interrupts[0].int_responder = self.membus.mem_side_ports
-
-        # # Create a DDR3 memory controller and connect it to the membus
-        # self.mem_ctrl = MemCtrl()
-        # self.mem_ctrl.dram = DDR3_1600_8x8()
-        # self.mem_ctrl.dram.range = self.mem_ranges[0]
-        # self.mem_ctrl.port = self.membus.mem_side_ports
-        #-------------------------------------------------------------------
         # Wire up the system port that gem5 uses to load the kernel
         # and to perform debug accesses.
         self.system_port = self.membus.cpu_side_ports
