@@ -1,0 +1,4 @@
+Benchmarks	simSeconds
+Bubblesort	0.149447
+IntMM	0.008137
+Oscar	0.014303
