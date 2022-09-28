@@ -85,11 +85,8 @@ def execute_se_benchmark(benchmark_name, benchmark_type):
     build_path = os.path.join(GEM5_BASE_PATH, BUILD_SCRIPT_RELATIVE_PATH)
     execution_param = "-d"
     benchmark_results_path = get_se_results_dir_path(benchmark_type, benchmark_name)
-    if benchmark_type == L3_STR:
-        starter_se_script_path = os.path.join(GEM5_BASE_PATH, STARTER_SE_W_L3_CACHE_SCRIPT_PATH)
-    else:
-        starter_se_script_path = os.path.join(GEM5_BASE_PATH, STARTER_SE_W_L2_CACHE_SCRIPT_PATH)
-    starter_se_script_params = '--cpu="hpi"' 
+    starter_se_script_path = os.path.join(GEM5_BASE_PATH, STARTER_SE_W_L3_CACHE_SCRIPT_PATH)
+    starter_se_script_params = '--cpu="hpi"' + ' --LLC="' + benchmark_type.upper() + '"'
     benchmark_path = os.path.join(SE_BENCHMARKS_BASE_DIR_PATH, benchmark_name)
 
     execution_str = build_path + SPACE_CHAR + execution_param + \
@@ -98,7 +95,7 @@ def execute_se_benchmark(benchmark_name, benchmark_type):
                     starter_se_script_params + SPACE_CHAR + \
                     benchmark_path
     os.system(execution_str)
-    print("\n ********* Done executing *********")
+    print("\n********* Done executing *********")
 
 #------------------------------------------
 

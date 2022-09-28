@@ -58,15 +58,42 @@ import devices
 # Pre-defined CPU configurations. Each tuple must be ordered as : (cpu_class,
 # l1_icache_class, l1_dcache_class, walk_cache_class, l2_Cache_class). Any of
 # the cache class may be 'None' if the particular cache is not present.
+HPI_STR = "hpi"
+HPI_ONLY_L2_STR = "hpi_only_L2"
+HPI_WITH_L3_STR = "hpi_with_L3"
+L2_STR = "L2"
+L3_STR = "L3"
+LLC_CHOICES = [L2_STR, L3_STR]
+
+hpi_types = {
+    HPI_ONLY_L2_STR : ( HPI.HPI,
+                    HPI.HPI_ICache, HPI.HPI_DCache,
+                    HPI.HPI_L2, None),
+    HPI_WITH_L3_STR : ( HPI.HPI,
+                    HPI.HPI_ICache, HPI.HPI_DCache,
+                    HPI.HPI_L2, HPI.HPI_L3)
+}
+
 cpu_types = {
     "atomic" : ( AtomicSimpleCPU, None, None, None),
     "minor" : (MinorCPU,
                devices.L1I, devices.L1D,
                devices.L2),
-    "hpi" : ( HPI.HPI,
-              HPI.HPI_ICache, HPI.HPI_DCache,
-              HPI.HPI_L2, HPI.HPI_L3)
+    "hpi"   : None
+    # "hpi" : ( HPI.HPI,
+    #           HPI.HPI_ICache, HPI.HPI_DCache,
+    #           HPI.HPI_L2, HPI.HPI_L3)
 }
+
+#-----------------------------------------
+
+def set_hpi_cpu_type(args):
+    cpu_types[HPI_STR] = hpi_types[HPI_ONLY_L2_STR] \
+                         if args.LLC == L2_STR \
+                         else hpi_types[HPI_WITH_L3_STR]
+
+
+#-----------------------------------------
 
 
 class SimpleSeSystem(System):
@@ -99,6 +126,9 @@ class SimpleSeSystem(System):
         self.system_port = self.membus.cpu_side_ports
 
 
+        # Set HPI with L3 or only L2 according to input param.
+        set_hpi_cpu_type(args)
+
         # Add CPUs to the system. A cluster of CPUs typically have
         # private L1 caches and a shared L2 cache.
         self.cpu_cluster = devices.CpuCluster(self,
@@ -111,10 +141,13 @@ class SimpleSeSystem(System):
         # and connect it to the shared memory bus.
         if self.cpu_cluster.memoryMode() == "timing":
             self.cpu_cluster.addL1()
-            self.cpu_cluster.addL2L3(self.cpu_cluster.clk_domain)
+            if args.LLC == L2_STR:
+                self.cpu_cluster.addL2(self.cpu_cluster.clk_domain)
+            else:
+                self.cpu_cluster.addL2L3(self.cpu_cluster.clk_domain)
             # self.cpu_cluster.addL2(self.cpu_cluster.clk_domain)
             # self.cpu_cluster.addL3(self.cpu_cluster.clk_domain)
-        self.cpu_cluster.connectMemSide(self.membus, type="L3")
+        self.cpu_cluster.connectMemSide(self.membus, type=args.LLC)
 
         # Tell gem5 about the memory mode used by the CPUs we are
         # simulating.
@@ -200,6 +233,9 @@ def main():
     parser.add_argument("--mem-size", action="store", type=str,
                         default="2GB",
                         help="Specify the physical memory size")
+    parser.add_argument("--LLC", type=str, choices=LLC_CHOICES,
+                        default=L2_STR,
+                        help="Specify the last level cache: L2 or L3")
 
     args = parser.parse_args()
 
