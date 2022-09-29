@@ -182,6 +182,6 @@ void Trees(int run) {
 int main()
 {
 	int i;
-	for (i = 0; i < 100; i++) Trees(i);
+	for (i = 0; i < 10; i++) Trees(i);
 	return 0;
 }
