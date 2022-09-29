@@ -1,5 +1,5 @@
 This repo is a slightly modified version of the gem5 simulator.
-Modification includes cache miss latency histogram statistics gathering.
+Modification includes the gathering of cache miss latency statistics to a histogram.
 
 In addition, the repo contains a script to plot and compare between L2 latencies of several of ARM's SE benchmarks.
 The comparison per benchmark: With and without a last-level cache of L2 or L3.
