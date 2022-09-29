@@ -156,12 +156,17 @@ def main():
                 execute_se_benchmark(bm_name, L2_STR)
                 execute_se_benchmark(bm_name, L3_STR)
 
+    print("*** Comparison between L2 latencies of selected benchmarks, with and without L3 as LLC ***\n")
+
     if ALL_STR in args.bm_names:
         for bm_name in BENCHMARKS_LIST:
             compare_benchmark_stats(bm_name, args.show_plots)
     else:
         for bm_name in args.bm_names:
             compare_benchmark_stats(bm_name, args.show_plots)
+
+    print("\n*** End of comparison ***")
+
 
 #------------------------------------------
 
