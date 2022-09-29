@@ -1361,7 +1361,7 @@ class HPI_DCache(Cache):
     response_latency = 1
     mshrs = 4
     tgts_per_mshr = 8
-    size = '32kB'
+    size = '8kB'
     assoc = 4
     write_buffers = 4
     prefetcher = StridePrefetcher(
@@ -1374,7 +1374,7 @@ class HPI_L2(Cache):
     response_latency = 5
     mshrs = 4
     tgts_per_mshr = 8
-    size = '1024kB'
+    size = '16kB'
     assoc = 16
     write_buffers = 16
     # prefetcher FIXME
