@@ -101,7 +101,7 @@ class HistogramStatsList:
     #--------------------------------------------------
 
     def get_benchmark_name(self):
-        return self.benchmarkName
+        return self.benchmark_name
 
     #--------------------------------------------------
 
