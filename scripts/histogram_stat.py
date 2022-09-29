@@ -1,9 +1,11 @@
-from statistics import mean
-import matplotlib.pyplot as plt
+import plotly.express as px
+from time import sleep
 
 MEAN_STR = "mean"
 SAMPLES_STR = "samples"
 TOTAL_STR = "total"
+L2_STR = "l2"
+L3_STR = "l3"
 
 #-------------------------------------------
 def is_float(element) -> bool:
@@ -89,11 +91,12 @@ class HistogramStat:
 #------------------------------------------------------
 
 class HistogramStatsList:
-    def __init__(self, stat_filter = None, name = None, bm_name = None):
+    def __init__(self, stat_filter = None, name = None, plot_title_name = None):
         self.listName = name
         self.statFilter = stat_filter
-        self.benchmark_name = bm_name
+        self.plotTitle = plot_title_name
 
+        self.plotColor = "blue" if L2_STR.upper() in plot_title_name else "orange"
         self.mean = -1
         self.samples_num = -1
         self.histStatsList = []
@@ -101,7 +104,7 @@ class HistogramStatsList:
     #--------------------------------------------------
 
     def get_benchmark_name(self):
-        return self.benchmark_name
+        return self.plotTitle
 
     #--------------------------------------------------
 
@@ -154,12 +157,14 @@ class HistogramStatsList:
         print("{} samples num = {}".format(self.statFilter, self.samples_num))
         print("{} mean = {}".format(self.statFilter, self.mean))
 
-        plt.bar(bucket_ranges, bucket_samples)
-        plt.xlabel("Clock ticks range")
-        plt.ylabel("Miss Latencies")
+        title = self.plotTitle + ": " if self.plotTitle != None else ""
+        title += "Cache miss latencies vs. Clock ticks range. "
+        title += "Average L2 latency = {} clock ticks".format(self.mean)
 
-        title = self.benchmark_name + ": " if self.benchmark_name != None else ""
-        title += "Cache miss latencies vs. Clock ticks range"
-        plt.title(title)
-        plt.xticks(rotation=90)
-        # plt.show(block=True)
+        fig = px.bar(x=bucket_ranges, y=bucket_samples,
+                     title=title)
+        fig.update_traces(marker_color=self.plotColor)
+        fig.update_layout(xaxis_title="Miss latency clock ticks range",
+                          yaxis_title="Number of latency samples within ticks range")
+        fig.show()
+        sleep(0.5) # Added 0.5sec of wait between plots for functional stability.

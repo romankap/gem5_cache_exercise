@@ -1,7 +1,6 @@
 import re, os
-from histogram_stat import HistogramStatsList
-import matplotlib.pyplot as plt
 import argparse
+from histogram_stat import HistogramStatsList, L2_STR, L3_STR
 
 GEM5_BASE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../")
 BUILD_SCRIPT_RELATIVE_PATH = 'build/ARM/gem5.opt'
@@ -17,8 +16,7 @@ SE_RESULTS_STR = "se_results"
 MISS_LATENCY_STR = "missLatency"
 L2_CACHE_STR = "l2cache"
 L3_CACHE_STR = "l3cache"
-L2_STR = "l2"
-L3_STR = "l3"
+
 SPACE_CHAR = ' '
 
 # Benchmarks
@@ -36,7 +34,7 @@ ALL_STR = "all"
 #------------------------------------------
 
 def get_histogram_stats_list(file_lines, stat_filter, benchmark_type, benchmark_name):
-    plot_title_name = benchmark_name + " , " + benchmark_type
+    plot_title_name = benchmark_name + ", LLC=" + benchmark_type.upper()
     hist_stats_list = HistogramStatsList(stat_filter, "L2 Miss Latencies", plot_title_name)
 
     for line in file_lines:
@@ -101,11 +99,11 @@ def execute_se_benchmark(benchmark_name, benchmark_type):
 
 def set_and_return_parsed_args():
     parser = argparse.ArgumentParser(description="Choose whether to execute a BM or only compare.")
-
-    parser.add_argument("--bm_names", type=str, choices=BENCHMARKS_LIST,
-                        default=INT_MM_STR, nargs='*', metavar='',
+    bm_choices = BENCHMARKS_LIST + [ALL_STR]
+    parser.add_argument("--bm_names", type=str, choices=bm_choices,
+                        default=INT_MM_STR, nargs='+', metavar='',
                         help="Choose which BM to execute or compare: " +
-                        ', '.join(BENCHMARKS_LIST) + " or all.")
+                        ', '.join(BENCHMARKS_LIST) + " or " + ALL_STR + ".")
     parser.add_argument("--execute_bm", default=False, action='store_true',
                         help="If the argument is set, the benchmarks will be executed before their comparison.")
     args = parser.parse_args()
@@ -145,8 +143,6 @@ def main():
     else:
         for bm_name in args.bm_names:
             compare_benchmark_stats(bm_name)
-    plt.show(block=True)
-
 
 #------------------------------------------
 
