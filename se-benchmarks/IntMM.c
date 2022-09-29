@@ -21,7 +21,7 @@
 #define maxcells 	 18
 
     /* Intmm, Mm */
-#define rowsize 	 40
+#define rowsize 	 100
 
     /* Puzzle */
 #define size	 	 511
