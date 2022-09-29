@@ -183,6 +183,6 @@ void Queens (int run) {
 int main()
 {
 	int i;
-	for (i = 0; i < 100; i++) Queens(i);
+	for (i = 0; i < 10; i++) Queens(i);
 	return 0;
 }
