@@ -154,8 +154,8 @@ class HistogramStatsList:
             bucket_ranges.append(hist_stat.get_bucket_range())
             bucket_samples.append(hist_stat.get_bucket_samples_num())
 
-        print("{} samples num = {}".format(self.statFilter, self.samples_num))
-        print("{} mean = {}".format(self.statFilter, self.mean))
+        # print("{} samples num = {}".format(self.statFilter, self.samples_num))
+        # print("{} mean = {}".format(self.statFilter, self.mean))
 
         title = self.plotTitle + ": " if self.plotTitle != None else ""
         title += "Cache miss latencies vs. Clock ticks range. "
@@ -166,5 +166,6 @@ class HistogramStatsList:
         fig.update_traces(marker_color=self.plotColor)
         fig.update_layout(xaxis_title="Miss latency clock ticks range",
                           yaxis_title="Number of latency samples within ticks range")
+        sleep(0.5)
         fig.show()
         sleep(0.5) # Added 0.5sec of wait between plots for functional stability.
