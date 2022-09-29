@@ -7327,7 +7327,7 @@
                             "name": "workload",
                             "path": "system.cpu_cluster.cpus.workload",
                             "cmd": [
-                                "/home/rkaplan/gem5_exercise/gem5/scripts/../se-benchmarks/FloatMM"
+                                "/home/rkaplan/gem5_exercise/gem5/scripts/../se-benchmarks/Treesort"
                             ],
                             "cwd": "/home/rkaplan/gem5_exercise/gem5",
                             "drivers": [],
@@ -7336,7 +7336,7 @@
                             "errout": "cerr",
                             "euid": 100,
                             "eventq_index": 0,
-                            "executable": "/home/rkaplan/gem5_exercise/gem5/scripts/../se-benchmarks/FloatMM",
+                            "executable": "/home/rkaplan/gem5_exercise/gem5/scripts/../se-benchmarks/Treesort",
                             "gid": 1000,
                             "input": "cin",
                             "kvmInSE": false,

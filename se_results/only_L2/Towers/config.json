@@ -7327,7 +7327,7 @@
                             "name": "workload",
                             "path": "system.cpu_cluster.cpus.workload",
                             "cmd": [
-                                "/home/rkaplan/gem5_exercise/gem5/scripts/../se-benchmarks/FloatMM"
+                                "/home/rkaplan/gem5_exercise/gem5/scripts/../se-benchmarks/Towers"
                             ],
                             "cwd": "/home/rkaplan/gem5_exercise/gem5",
                             "drivers": [],
@@ -7336,7 +7336,7 @@
                             "errout": "cerr",
                             "euid": 100,
                             "eventq_index": 0,
-                            "executable": "/home/rkaplan/gem5_exercise/gem5/scripts/../se-benchmarks/FloatMM",
+                            "executable": "/home/rkaplan/gem5_exercise/gem5/scripts/../se-benchmarks/Towers",
                             "gid": 1000,
                             "input": "cin",
                             "kvmInSE": false,
@@ -7742,112 +7742,6 @@
                 },
                 "mem_side": {
                     "role": "GEM5 REQUESTOR",
-                    "peer": "system.cpu_cluster.toL3Bus.cpu_side_ports[0]",
-                    "is_source": "True"
-                }
-            },
-            "l3": {
-                "type": "Cache",
-                "cxx_class": "gem5::Cache",
-                "name": "l3",
-                "path": "system.cpu_cluster.l3",
-                "addr_ranges": [
-                    "0:18446744073709551615"
-                ],
-                "assoc": 32,
-                "clk_domain": "system.cpu_cluster.clk_domain",
-                "clusivity": "mostly_incl",
-                "compressor": null,
-                "data_latency": 52,
-                "demand_mshr_reserve": 1,
-                "eventq_index": 0,
-                "is_read_only": false,
-                "max_miss_count": 0,
-                "move_contractions": true,
-                "mshrs": 8,
-                "power_model": [],
-                "power_state": {
-                    "type": "PowerState",
-                    "cxx_class": "gem5::PowerState",
-                    "name": "power_state",
-                    "path": "system.cpu_cluster.l3.power_state",
-                    "clk_gate_bins": 20,
-                    "clk_gate_max": 1000000000000,
-                    "clk_gate_min": 1000,
-                    "default_state": "UNDEFINED",
-                    "eventq_index": 0,
-                    "leaders": [],
-                    "possible_states": []
-                },
-                "prefetch_on_access": false,
-                "prefetch_on_pf_hit": false,
-                "prefetcher": null,
-                "replace_expansions": true,
-                "replacement_policy": {
-                    "type": "LRURP",
-                    "cxx_class": "gem5::replacement_policy::LRU",
-                    "name": "replacement_policy",
-                    "path": "system.cpu_cluster.l3.replacement_policy",
-                    "eventq_index": 0
-                },
-                "response_latency": 20,
-                "sequential_access": false,
-                "size": 16777216,
-                "system": "system",
-                "tag_latency": 52,
-                "tags": {
-                    "type": "BaseSetAssoc",
-                    "cxx_class": "gem5::BaseSetAssoc",
-                    "name": "tags",
-                    "path": "system.cpu_cluster.l3.tags",
-                    "assoc": 32,
-                    "block_size": 64,
-                    "clk_domain": "system.cpu_cluster.clk_domain",
-                    "entry_size": 64,
-                    "eventq_index": 0,
-                    "indexing_policy": {
-                        "type": "SetAssociative",
-                        "cxx_class": "gem5::SetAssociative",
-                        "name": "indexing_policy",
-                        "path": "system.cpu_cluster.l3.tags.indexing_policy",
-                        "assoc": 32,
-                        "entry_size": 64,
-                        "eventq_index": 0,
-                        "size": 16777216
-                    },
-                    "power_model": [],
-                    "power_state": {
-                        "type": "PowerState",
-                        "cxx_class": "gem5::PowerState",
-                        "name": "power_state",
-                        "path": "system.cpu_cluster.l3.tags.power_state",
-                        "clk_gate_bins": 20,
-                        "clk_gate_max": 1000000000000,
-                        "clk_gate_min": 1000,
-                        "default_state": "UNDEFINED",
-                        "eventq_index": 0,
-                        "leaders": [],
-                        "possible_states": []
-                    },
-                    "replacement_policy": "system.cpu_cluster.l3.replacement_policy",
-                    "sequential_access": false,
-                    "size": 16777216,
-                    "system": "system",
-                    "tag_latency": 52,
-                    "warmup_percentage": 0
-                },
-                "tgts_per_mshr": 16,
-                "warmup_percentage": 0,
-                "write_allocator": null,
-                "write_buffers": 32,
-                "writeback_clean": false,
-                "cpu_side": {
-                    "role": "GEM5 RESPONDER",
-                    "peer": "system.cpu_cluster.toL3Bus.mem_side_ports[0]",
-                    "is_source": "False"
-                },
-                "mem_side": {
-                    "role": "GEM5 REQUESTOR",
                     "peer": "system.membus.cpu_side_ports[1]",
                     "is_source": "True"
                 }
@@ -7911,64 +7805,6 @@
                     "role": "GEM5 REQUESTOR",
                     "peer": [
                         "system.cpu_cluster.l2.cpu_side"
-                    ],
-                    "is_source": "True"
-                }
-            },
-            "toL3Bus": {
-                "type": "CoherentXBar",
-                "cxx_class": "gem5::CoherentXBar",
-                "name": "toL3Bus",
-                "path": "system.cpu_cluster.toL3Bus",
-                "clk_domain": "system.cpu_cluster.clk_domain",
-                "eventq_index": 0,
-                "forward_latency": 0,
-                "frontend_latency": 1,
-                "header_latency": 1,
-                "max_outstanding_snoops": 512,
-                "max_routing_table_size": 512,
-                "point_of_coherency": false,
-                "point_of_unification": true,
-                "power_model": [],
-                "power_state": {
-                    "type": "PowerState",
-                    "cxx_class": "gem5::PowerState",
-                    "name": "power_state",
-                    "path": "system.cpu_cluster.toL3Bus.power_state",
-                    "clk_gate_bins": 20,
-                    "clk_gate_max": 1000000000000,
-                    "clk_gate_min": 1000,
-                    "default_state": "UNDEFINED",
-                    "eventq_index": 0,
-                    "leaders": [],
-                    "possible_states": []
-                },
-                "response_latency": 1,
-                "snoop_filter": {
-                    "type": "SnoopFilter",
-                    "cxx_class": "gem5::SnoopFilter",
-                    "name": "snoop_filter",
-                    "path": "system.cpu_cluster.toL3Bus.snoop_filter",
-                    "eventq_index": 0,
-                    "lookup_latency": 0,
-                    "max_capacity": 8388608,
-                    "system": "system"
-                },
-                "snoop_response_latency": 1,
-                "system": "system",
-                "use_default_range": false,
-                "width": 64,
-                "cpu_side_ports": {
-                    "role": "GEM5 RESPONDER",
-                    "peer": [
-                        "system.cpu_cluster.l2.mem_side"
-                    ],
-                    "is_source": "False"
-                },
-                "mem_side_ports": {
-                    "role": "GEM5 REQUESTOR",
-                    "peer": [
-                        "system.cpu_cluster.l3.cpu_side"
                     ],
                     "is_source": "True"
                 }
@@ -8360,7 +8196,7 @@
                 "role": "GEM5 RESPONDER",
                 "peer": [
                     "system.system_port",
-                    "system.cpu_cluster.l3.mem_side"
+                    "system.cpu_cluster.l2.mem_side"
                 ],
                 "is_source": "False"
             },
