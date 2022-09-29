@@ -155,6 +155,6 @@ void Mm (int run)    {
 int main()
 {
 	int i;
-	for (i = 0; i < 5000; i++) Mm(i);
+	for (i = 0; i < 10; i++) Mm(i);
 	return 0;
 }
