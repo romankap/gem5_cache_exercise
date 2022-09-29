@@ -7329,7 +7329,7 @@
                             "cmd": [
                                 "/home/rkaplan/gem5_exercise/gem5/scripts/../se-benchmarks/Quicksort"
                             ],
-                            "cwd": "/home/rkaplan/gem5_exercise/gem5/scripts",
+                            "cwd": "/home/rkaplan/gem5_exercise/gem5",
                             "drivers": [],
                             "egid": 100,
                             "env": [],
@@ -7462,7 +7462,7 @@
                         },
                         "response_latency": 1,
                         "sequential_access": false,
-                        "size": 32768,
+                        "size": 8192,
                         "system": "system",
                         "tag_latency": 1,
                         "tags": {
@@ -7483,7 +7483,7 @@
                                 "assoc": 4,
                                 "entry_size": 64,
                                 "eventq_index": 0,
-                                "size": 32768
+                                "size": 8192
                             },
                             "power_model": [],
                             "power_state": {
@@ -7501,7 +7501,7 @@
                             },
                             "replacement_policy": "system.cpu_cluster.cpus.dcache.replacement_policy",
                             "sequential_access": false,
-                            "size": 32768,
+                            "size": 8192,
                             "system": "system",
                             "tag_latency": 1,
                             "warmup_percentage": 0
@@ -7686,7 +7686,7 @@
                 },
                 "response_latency": 5,
                 "sequential_access": false,
-                "size": 1048576,
+                "size": 16384,
                 "system": "system",
                 "tag_latency": 13,
                 "tags": {
@@ -7707,7 +7707,7 @@
                         "assoc": 16,
                         "entry_size": 64,
                         "eventq_index": 0,
-                        "size": 1048576
+                        "size": 16384
                     },
                     "power_model": [],
                     "power_state": {
@@ -7725,7 +7725,7 @@
                     },
                     "replacement_policy": "system.cpu_cluster.l2.replacement_policy",
                     "sequential_access": false,
-                    "size": 1048576,
+                    "size": 16384,
                     "system": "system",
                     "tag_latency": 13,
                     "warmup_percentage": 0
