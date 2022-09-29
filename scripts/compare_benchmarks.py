@@ -129,7 +129,7 @@ def compare_benchmark_stats(benchmark_name, is_show_plots):
 
 def set_and_return_parsed_args():
     description_str = "Choose whether to execute a benchmark or only compare between last-level cache of L2 vs. L3. " + \
-                    "Comparison will open L2 latency bar plots in new browser tabs and will output L2 average latency to the console/terminal."
+                    "Comparison can be only printing L2 average latencies, or add latency histogram plots to be opened in new browser tabs."
     parser = argparse.ArgumentParser(description=description_str)
     bm_choices = BENCHMARKS_LIST + [ALL_STR]
     parser.add_argument("--bm_names", type=str, choices=bm_choices,
